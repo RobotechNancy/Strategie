@@ -2,6 +2,7 @@
 #define GRAPH_H
 
 #include <robotech/can.h>
+#include <robotech/xbee.h>
 
 
 class Graph {
