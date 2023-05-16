@@ -46,6 +46,11 @@ void LCD::clear() {
     usleep(500);
 }
 
+void LCD::set_cursor(uint8_t row, uint8_t col) {
+    col = (row == 0 ? col | 0x80 : col | 0xC0);
+    write_byte(LCD_COMMAND_REG, col);
+}
+
 void LCD::print(const std::string& str) {
     for (char c: str)
         write_byte(LCD_DATA_REG, c);

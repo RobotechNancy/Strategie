@@ -30,6 +30,7 @@ public:
 
     void clear();
     void print(const std::string& str);
+    void set_cursor(uint8_t row, uint8_t col);
 private:
     int file;
     void write_byte(uint8_t reg, uint8_t value) const;
