@@ -31,7 +31,7 @@ LCD::LCD() {
     clear();
 }
 
-inline void LCD::write_byte(uint8_t reg, uint8_t value) const {
+void LCD::write_byte(uint8_t reg, uint8_t value) const {
     uint8_t data[2] = {reg, value};
     size_t len = write(file, data, 2);
 
@@ -41,12 +41,12 @@ inline void LCD::write_byte(uint8_t reg, uint8_t value) const {
     }
 }
 
-inline void LCD::clear() {
+void LCD::clear() {
     write_byte(LCD_COMMAND_REG, LCD_CLEAR);
     usleep(500);
 }
 
-inline void LCD::print(const std::string& str) {
+void LCD::print(const std::string& str) {
     for (char c: str)
         write_byte(LCD_DATA_REG, c);
 }
