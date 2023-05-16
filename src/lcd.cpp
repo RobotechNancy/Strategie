@@ -46,9 +46,7 @@ inline void LCD::clear() {
     usleep(500);
 }
 
-inline void LCD::print(char *chars) {
-    while (*chars) {
-        write_byte(LCD_DATA_REG, *chars);
-        ++chars;
-    }
+inline void LCD::print(const std::string& str) {
+    for (char c: str)
+        write_byte(LCD_DATA_REG, c);
 }

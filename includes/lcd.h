@@ -5,6 +5,9 @@
 #ifndef GRAPH_LCD_H
 #define GRAPH_LCD_H
 
+#include <cstdint>
+#include <string>
+
 
 #define LCD_I2C_ADDR         0x3E
 #define LCD_DATA_REG         0x4
@@ -26,7 +29,7 @@ public:
     LCD();
 
     void clear();
-    void print(char *chars);
+    void print(const std::string& str);
 private:
     int file;
     void write_byte(uint8_t reg, uint8_t value) const;
