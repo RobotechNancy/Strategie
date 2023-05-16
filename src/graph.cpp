@@ -1,7 +1,5 @@
 #include <mutex>
-
 #include "graph.h"
-using namespace std;
 
 
 Graph::Graph(char count): logs("system") {
