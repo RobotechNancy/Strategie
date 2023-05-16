@@ -47,11 +47,21 @@ void LCD::clear() {
 }
 
 void LCD::set_cursor(uint8_t row, uint8_t col) {
+    if (row > 1 || col > 15) {
+        std::cout << "Erreur: les coordonnées du curseur sont invalides (grille 2x16)" << std::endl;
+        exit(1);
+    }
+
     col = (row == 0 ? col | 0x80 : col | 0xC0);
     write_byte(LCD_COMMAND_REG, col);
 }
 
 void LCD::print(const std::string& str) {
+    if (str.size() > 16) {
+        std::cout << "Erreur: la chaîne de caractères est trop longue" << std::endl;
+        exit(1);
+    }
+
     for (char c: str)
         write_byte(LCD_DATA_REG, c);
 }
