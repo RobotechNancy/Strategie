@@ -1,10 +1,10 @@
-#include <fcntl.h>
 #include <cstdio>
-#include <unistd.h>
 #include <cstdlib>
-#include <cstdint>
+#include <fcntl.h>
+#include <unistd.h>
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
+#include <iostream>
 
 #include "lcd.h"
 
@@ -13,14 +13,12 @@ LCD::LCD() {
     file = open("/dev/i2c-1", O_RDWR);
 
     if (file < 0) {
-        printf("Erreur lors de l'ouverture de l'I2C\n");
+        std::cout << "Erreur lors de l'ouverture de l'I2C" << std::endl;
         exit(1);
     }
 
-    int status = ioctl(file, I2C_SLAVE, LCD_I2C_ADDR);
-
-    if (status < 0) {
-        printf("Impossible de communiquer avec l'écran LCD (erreur %d)\n", status);
+    if (ioctl(file, I2C_SLAVE, LCD_I2C_ADDR) < 0) {
+        std::cout << "Impossible de communiquer avec l'écran LCD" << std::endl;
         exit(1);
     }
 
@@ -29,6 +27,8 @@ LCD::LCD() {
 
     write_byte(LCD_COMMAND_REG, LCD_DISPLAY_CONTROL | LCD_DISPLAY_ON);
     usleep(45);
+
+    clear();
 }
 
 inline void LCD::write_byte(uint8_t reg, uint8_t value) const {
@@ -36,7 +36,7 @@ inline void LCD::write_byte(uint8_t reg, uint8_t value) const {
     size_t len = write(file, data, 2);
 
     if (len != 2) {
-        printf("Erreur (%zu) lors de l'écriture de % dans %d\n", len, value, reg);
+        std::cout << "Erreur lors de l'écriture de " << value << " dans " << reg << std::endl;
         exit(1);
     }
 }

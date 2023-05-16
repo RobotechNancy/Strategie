@@ -10,7 +10,7 @@
 
 
 #define LCD_I2C_ADDR         0x3E
-#define LCD_DATA_REG         0x4
+#define LCD_DATA_REG         0x40
 #define LCD_COMMAND_REG      0x80
 
 #define LCD_FUNCTION_SET     0x20
