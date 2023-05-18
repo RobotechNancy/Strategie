@@ -6,20 +6,20 @@
 #include "hardware/base_roulante.h"
 
 
-motor_frame_t *convert_frame(frame_br_t *frame_br, motor_frame_t *motor_frame) {
+motor_frame_t *convert_frame(br_params_t *params, frame_br_t *frame_br, motor_frame_t *motor_frame) {
     const int DIRECTION = frame_br->fields.direction;
 
-    float dist_per_turn = DIAMETRE * M_PI; // mm
-    float step_size = (float) (360) / ((float) (DIV_DRIVER) * 200); // °
+    auto dist_per_turn = (float) (params->wheel_diamater * M_PI); // mm
+    float step_size = (float) 360.0f / ((float) (params->divider) * 200); // °
     float wished_dist;
 
     // Si le robot effectue une rotation sur  lui-même
     if ((DIRECTION == 7) || (DIRECTION == 8)) {
-        wished_dist = compute_arc(frame_br->fields.distance); // mm
+        wished_dist = compute_arc(params, frame_br->fields.distance); // mm
     } else {
         wished_dist = frame_br->fields.distance; // mm
     }
-    float wished_speed = frame_br->fields.vitesse; // mm/sec
+    float wished_speed = frame_br->fields.speed; // mm/sec
 
     // Nb de tours théoriques qu'une roue doit effectuer
     float turn_count = (float) wished_dist / (float) dist_per_turn;
@@ -125,7 +125,7 @@ motor_frame_t *convert_frame(frame_br_t *frame_br, motor_frame_t *motor_frame) {
     float div[3]; //diviseur de chaque roue
     for (int i = 0; i < 3; i++) {
         if (freq[i] != 0) {
-            div[i] = FREQ_BASE / freq[i];
+            div[i] = (float) params->frequency / freq[i];
         } else {
             div[i] = 0;
         }
@@ -174,7 +174,7 @@ motor_frame_t *convert_frame(frame_br_t *frame_br, motor_frame_t *motor_frame) {
 }
 
 
-float compute_arc(float angle) {
-    float arc = (float) (2 * M_PI * (DIAMETRE_BASE) * angle) / 360;
+float compute_arc(br_params_t *params, float angle) {
+    float arc = (float) (2 * M_PI * (params->base_diameter) * angle) / 360;
     return arc;
 }

@@ -1,7 +1,11 @@
-START 4912
+START c9f6
 
 xbee_port = /dev/ttyUSB0
 xbee_address = 4
-can_address = 1
+
+wheel_diameter = 60
+br_frequency = 10000
+br_divider = 2
+br_diameter = 93
 
 END
