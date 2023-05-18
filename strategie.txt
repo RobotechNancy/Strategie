@@ -1,9 +1,13 @@
 #DATA
 xbee_port = /dev/ttyUSB0
 xbee_address = 4
+can_address = 1
 
 #CODE
-MOVE x y direction
-//RECUP_BALLE
-MOVE x y direction
-//LACHER_BALLE
+AFFICHER HELLO_WORLD
+INIT_COMM
+MOVE speed distance direction
+OUVRIR_PANIER
+FERMER_PANIER
+ASPIRER
+PLACER_BALLE

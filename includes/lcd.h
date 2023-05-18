@@ -26,8 +26,7 @@
 
 class LCD {
 public:
-    LCD();
-
+    int init();
     void clear();
     void print(const std::string& str);
     void set_cursor(uint8_t row, uint8_t col);

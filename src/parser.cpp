@@ -10,7 +10,7 @@
 #include "parser.h"
 
 
-Parser::Parser(const char *filename) {
+Parser::Parser(const std::shared_ptr<Logger>& logger, const char *filename): logger(logger) {
     std::ifstream file(filename);
     bool inData = true;
 
@@ -51,11 +51,19 @@ Parser::Parser(const char *filename) {
                 )
         );
     }
+
+    std::cout << "Fichier " << filename << " chargé avec succès" << std::endl;
 }
 
 
-void Parser::execute() {
-    for (auto &instruction: instructions) {
-        instruction.callback(instruction.args);
+long Parser::parse_int(const std::string &str) {
+    try {
+        return std::stoi(str);
+    } catch (std::invalid_argument &e) {
+        *logger << "Impossible de convertir '" << str << "' en entier" << mendl;
+        exit(1);
+    } catch (std::out_of_range &e) {
+        *logger << "La valeur '" << str << "' est trop grande pour être convertie en entier" << mendl;
+        exit(1);
     }
 }
