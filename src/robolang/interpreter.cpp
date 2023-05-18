@@ -21,10 +21,10 @@ void Interpreter::execute(const std::string& name, const std::vector<std::string
     if (name == "FERMER_PANIER") return close_basket();
     if (name == "ASPIRER") return suck_up();
     if (name == "PLACER_BALLE") return place_ball();
-    if (name == "BAISSER_CREMAILLERE") return lower_cog();
-    if (name == "MONTER_CREMAILLERE") return raise_cog();
-    if (name == "ATTRAPER_GATEAU") return catch_cake();
-    if (name == "LACHER_GATEAU") return release_cake();
+    if (name == "BAISSER_CREMAILLERE") return lower_cog(args);
+    if (name == "MONTER_CREMAILLERE") return raise_cog(args);
+    if (name == "ATTRAPER_GATEAU") return catch_cake(args);
+    if (name == "LACHER_GATEAU") return release_cake(args);
 
     *logger << "Erreur : instruction inconnue : " << name << mendl;
     exit(1);
@@ -161,18 +161,23 @@ void Interpreter::place_ball() {
     can->send(CAN_ADDR_ACTIONNEUR, FCT_PLACER_BALLE, nullptr, 0, false, 0, 1);
 }
 
-void Interpreter::lower_cog() {
-    can->send(CAN_ADDR_ACTIONNEUR, FCT_BAISSER_CREMAILLERE, nullptr, 0, false, 0, 1);
+void Interpreter::lower_cog(const std::vector<std::string>& args) {
+    uint8_t data[1] = { (uint8_t) parser.parse_int(args[0]) };
+    can->send(CAN_ADDR_ACTIONNEUR, FCT_BAISSER_CREMAILLERE, data, 1, false, 0, 1);
 }
 
-void Interpreter::raise_cog() {
-    can->send(CAN_ADDR_ACTIONNEUR, FCT_MONTER_CREMAILLERE, nullptr, 0, false, 0, 1);
+void Interpreter::raise_cog(const std::vector<std::string>& args) {
+    uint8_t data[1] = { (uint8_t) parser.parse_int(args[0]) };
+    can->send(CAN_ADDR_ACTIONNEUR, FCT_MONTER_CREMAILLERE, data, 1, false, 0, 1);
 }
 
-void Interpreter::catch_cake() {
-    can->send(CAN_ADDR_ACTIONNEUR, FCT_ATTRAPER_GATEAU, nullptr, 0, false, 0, 1);
+void Interpreter::catch_cake(const std::vector<std::string>& args) {
+    uint8_t data[1] = { (uint8_t) parser.parse_int(args[0]) };
+
+    can->send(CAN_ADDR_ACTIONNEUR, FCT_ATTRAPER_GATEAU, data, 1, false, 0, 1);
 }
 
-void Interpreter::release_cake() {
-    can->send(CAN_ADDR_ACTIONNEUR, FCT_LACHER_GATEAU, nullptr, 0, false, 0, 1);
+void Interpreter::release_cake(const std::vector<std::string>& args) {
+    uint8_t data[1] = { (uint8_t) parser.parse_int(args[0]) };
+    can->send(CAN_ADDR_ACTIONNEUR, FCT_LACHER_GATEAU, data, 1, false, 0, 1);
 }

@@ -46,10 +46,10 @@ private:
     void close_basket();
     void suck_up();
     void place_ball();
-    void lower_cog();
-    void raise_cog();
-    void catch_cake();
-    void release_cake();
+    void lower_cog(const std::vector<std::string>& args);
+    void raise_cog(const std::vector<std::string>& args);
+    void catch_cake(const std::vector<std::string>& args);
+    void release_cake(const std::vector<std::string>& args);
 };
 
 
