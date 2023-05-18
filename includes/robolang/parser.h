@@ -12,8 +12,11 @@
 
 class Parser {
 public:
-    explicit Parser(const std::shared_ptr<Logger>& logger, const char* filename);
+    explicit Parser(const std::shared_ptr<Logger>& logger): logger(logger) {};
+
     long parse_int(const std::string& str);
+    void parse_config(const char *filename);
+    void parse_strategy(const char *filename);
 
     template<typename T> inline T get(const std::string& key) {
         if (config.find(key) == config.end()) {
@@ -31,6 +34,10 @@ public:
     [[nodiscard]] std::vector<std::pair<std::string, std::vector<std::string>>> get_instructions() const {
         return instructions;
     };
+
+    static uint16_t compute_crc(const std::string &str, uint16_t start, uint16_t end);
+    static void update_crc(const char* filename);
+    static void validate_file(const std::basic_string<char>& str, std::vector<std::string> &lines);
 private:
     std::shared_ptr<Logger> logger;
     std::map<std::string, std::string> config;

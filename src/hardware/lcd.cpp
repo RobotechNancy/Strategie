@@ -5,7 +5,7 @@
 #include <linux/i2c-dev.h>
 #include <iostream>
 
-#include "lcd.h"
+#include "hardware/lcd.h"
 
 
 int LCD::init() {

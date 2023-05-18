@@ -12,17 +12,18 @@
 #include <utility>
 #include <functional>
 
-#include "lcd.h"
-#include "parser.h"
+#include "hardware/lcd.h"
 #include "robotech/can.h"
 #include "robotech/xbee.h"
+#include "robolang/parser.h"
 
 
 class Interpreter {
 public:
-    explicit Interpreter(const std::shared_ptr<Logger>& logger, const char* filename):
-        logger(logger), parser(logger, filename), lcd() {};
+    explicit Interpreter(const std::shared_ptr<Logger>& logger):
+        logger(logger), parser(logger), lcd() {};
 
+    void prepare(const char* configFile, const char* stratFile);
     void run();
     void execute(const std::string& name, const std::vector<std::string>& args);
 private:

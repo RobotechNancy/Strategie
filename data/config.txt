@@ -1,0 +1,7 @@
+START 4912
+
+xbee_port = /dev/ttyUSB0
+xbee_address = 4
+can_address = 1
+
+END

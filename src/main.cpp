@@ -1,8 +1,12 @@
-#include "interpreter.h"
+#include "robolang/interpreter.h"
 
 int main() {
-    std::shared_ptr<Logger> logger = std::make_shared<Logger>("system");
-    Interpreter interpreter(logger, "instructions.txt");
+    Interpreter interpreter(
+            std::make_shared<Logger>("system")
+    );
+
+    interpreter.prepare("../data/config.txt", "../data/strategie.txt");
+    interpreter.run();
 
     return 0;
 }
