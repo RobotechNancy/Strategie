@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <iterator>
+#include <algorithm>
 
 #include "robolang/parser.h"
 
@@ -13,7 +14,7 @@ void Parser::parse_config(const char *filename) {
     std::ifstream file(filename);
 
     if (!file.is_open()) {
-        *logger << "Erreur lors de l'ouverture du fichier " << filename << mendl;
+        *logger << "Erreur lors de l'ouverture du fichier " << filename << std::endl;
         exit(1);
     }
 
@@ -37,7 +38,7 @@ void Parser::parse_strategy(const char *filename) {
     std::ifstream file(filename);
 
     if (!file.is_open()) {
-        *logger << "Erreur lors de l'ouverture du fichier " << filename << mendl;
+        *logger << "Erreur lors de l'ouverture du fichier " << filename << std::endl;
         exit(1);
     }
 
@@ -72,10 +73,10 @@ long Parser::parse_int(const std::string &str) {
     try {
         return std::stoi(str);
     } catch (std::invalid_argument &e) {
-        *logger << "Impossible de convert_frame '" << str << "' en entier" << mendl;
+        *logger << "Impossible de convert_frame '" << str << "' en entier" << std::endl;
         exit(1);
     } catch (std::out_of_range &e) {
-        *logger << "La valeur '" << str << "' est trop grande pour être convertie en entier" << mendl;
+        *logger << "La valeur '" << str << "' est trop grande pour être convertie en entier" << std::endl;
         exit(1);
     }
 }

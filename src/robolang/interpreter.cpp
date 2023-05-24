@@ -11,7 +11,7 @@ void Interpreter::execute(const std::string& name, const std::vector<std::string
     if (name == "INIT_COMM") return init_comm();
 
     if (can == nullptr) {
-        *logger << "Erreur : le bus CAN n'a pas été initialisé" << mendl;
+        *logger << "Erreur : le bus CAN n'a pas été initialisé" << std::endl;
         exit(1);
     }
 
@@ -26,14 +26,14 @@ void Interpreter::execute(const std::string& name, const std::vector<std::string
     if (name == "ATTRAPER_GATEAU") return catch_cake(args);
     if (name == "LACHER_GATEAU") return release_cake(args);
 
-    *logger << "Erreur : instruction inconnue : " << name << mendl;
+    *logger << "Erreur : instruction inconnue : " << name << std::endl;
     exit(1);
 }
 
 
 void Interpreter::init() {
     if (lcd.init() != 0) {
-        *logger << "Erreur : impossible d'initialiser l'écran LCD" << mendl;
+        *logger << "Erreur : impossible d'initialiser l'écran LCD" << std::endl;
         exit(1);
     }
 
@@ -61,7 +61,7 @@ void Interpreter::run() {
 
 void Interpreter::display(const std::vector<std::string> &args) {
     if (args.size() > 2) {
-        *logger << "Erreur : Trop de lignes à afficher (2 max)" << mendl;
+        *logger << "Erreur : Trop de lignes à afficher (2 max)" << std::endl;
         return;
     }
 
@@ -75,8 +75,8 @@ void Interpreter::display(const std::vector<std::string> &args) {
 
 
 void Interpreter::init_comm() {
-    if (can->init() != 0) {
-        *logger << "Erreur : impossible d'initialiser le bus CAN" << mendl;
+    if (can->init(CAN_ADDR_RASPBERRY) != 0) {
+        *logger << "Erreur : impossible d'initialiser le bus CAN" << std::endl;
         exit(1);
     }
 
@@ -85,7 +85,7 @@ void Interpreter::init_comm() {
     );
 
     if (status != 0) {
-        *logger << "Erreur : impossible d'initialiser le module XBee" << mendl;
+        *logger << "Erreur : impossible d'initialiser le module XBee" << std::endl;
         exit(1);
     }
 }
@@ -93,21 +93,21 @@ void Interpreter::init_comm() {
 
 void Interpreter::test_comm() {
     uint8_t can_data[1] = {0x02};
-    can_mess_t can_resp;
+    can_message_t can_resp;
 
-    CAN_ADDR can_addrs[4] = {
+    can_address_t can_addrs[4] = {
             CAN_ADDR_BASE_ROULANTE,
             CAN_ADDR_ODOMETRIE,
-            CAN_ADDR_ODOMETRIE_TOF,
-            CAN_ADDR_ACTIONNEUR
+            CAN_ADDR_TOF,
+            CAN_ADDR_ACTIONNEURS
     };
 
     for (auto addr: can_addrs) {
-        can->send(addr, FCT_ACCUSER_RECPETION, can_data, 1, false, 1, 0);
-        can_resp = can->wait_for_response(FCT_ACCUSER_RECPETION, 1000);
+        can->send(addr, FCT_ACCUSER_RECPETION, can_data, 1, 1, false);
+        can->waitFor(can_resp, 1, 1000);
 
         if (can_resp.data[0] != 0x02) {
-            *logger << "Erreur : le module " << std::showbase << std::hex << addr << " n'a pas répondu correctement" << mendl;
+            *logger << "Erreur : le module " << std::showbase << std::hex << addr << " n'a pas répondu correctement" << std::endl;
             exit(1);
         }
     }
@@ -125,7 +125,7 @@ void Interpreter::test_comm() {
         xbee_resp = xbee->wait_for_response(XB_FCT_TEST_ALIVE, 1000);
 
         if (xbee_resp.data[0] != 0x02) {
-            *logger << "Erreur : le module XBee " << std::showbase << std::hex << addr << " n'a pas répondu correctement" << mendl;
+            *logger << "Erreur : le module XBee " << std::showbase << std::hex << addr << " n'a pas répondu correctement" << std::endl;
             exit(1);
         }
     }
@@ -141,43 +141,43 @@ void Interpreter::move(const std::vector<std::string> &args) {
     motor_frame_t motor_frame;
     convert_frame(&br_params, &frame_br, &motor_frame);
 
-    can->send(CAN_ADDR_BASE_ROULANTE, FCT_AVANCE, motor_frame.raw_data, 8, false, 1, 0);
+    can->send(CAN_ADDR_BASE_ROULANTE, FCT_AVANCE, motor_frame.raw_data, 8, 1, false);
 }
 
 
 void Interpreter::open_basket() {
-    can->send(CAN_ADDR_ACTIONNEUR, FCT_OUVRIR_PANIER, nullptr, 0, false, 0, 1);
+    can->send(CAN_ADDR_ACTIONNEURS, FCT_OUVRIR_PANIER, nullptr, 0, 1, false);
 }
 
 void Interpreter::close_basket() {
-    can->send(CAN_ADDR_ACTIONNEUR, FCT_FERMER_PANIER, nullptr, 0, false, 0, 1);
+    can->send(CAN_ADDR_ACTIONNEURS, FCT_FERMER_PANIER, nullptr, 0, 1, false);
 }
 
 void Interpreter::suck_up() {
-    can->send(CAN_ADDR_ACTIONNEUR, FCT_ASPIRER_BALLE, nullptr, 0, false, 0, 1);
+    can->send(CAN_ADDR_ACTIONNEURS, FCT_ASPIRER_BALLE, nullptr, 0, 1, false);
 }
 
 void Interpreter::place_ball() {
-    can->send(CAN_ADDR_ACTIONNEUR, FCT_PLACER_BALLE, nullptr, 0, false, 0, 1);
+    can->send(CAN_ADDR_ACTIONNEURS, FCT_PLACER_BALLE, nullptr, 0, 1, false);
 }
 
 void Interpreter::lower_cog(const std::vector<std::string>& args) {
     uint8_t data[1] = { (uint8_t) parser.parse_int(args[0]) };
-    can->send(CAN_ADDR_ACTIONNEUR, FCT_BAISSER_CREMAILLERE, data, 1, false, 0, 1);
+    can->send(CAN_ADDR_ACTIONNEURS, FCT_BAISSER_CREMAILLERE, data, 1, 1, false);
 }
 
 void Interpreter::raise_cog(const std::vector<std::string>& args) {
     uint8_t data[1] = { (uint8_t) parser.parse_int(args[0]) };
-    can->send(CAN_ADDR_ACTIONNEUR, FCT_MONTER_CREMAILLERE, data, 1, false, 0, 1);
+    can->send(CAN_ADDR_ACTIONNEURS, FCT_MONTER_CREMAILLERE, data, 1, 1, false);
 }
 
 void Interpreter::catch_cake(const std::vector<std::string>& args) {
     uint8_t data[1] = { (uint8_t) parser.parse_int(args[0]) };
 
-    can->send(CAN_ADDR_ACTIONNEUR, FCT_ATTRAPER_GATEAU, data, 1, false, 0, 1);
+    can->send(CAN_ADDR_ACTIONNEURS, FCT_ATTRAPER_GATEAU, data, 1, 1, false);
 }
 
 void Interpreter::release_cake(const std::vector<std::string>& args) {
     uint8_t data[1] = { (uint8_t) parser.parse_int(args[0]) };
-    can->send(CAN_ADDR_ACTIONNEUR, FCT_LACHER_GATEAU, data, 1, false, 0, 1);
+    can->send(CAN_ADDR_ACTIONNEURS, FCT_LACHER_GATEAU, data, 1, 1, false);
 }
